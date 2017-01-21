@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2013-2016 SlimRoms Project
+<!-- Copyright (C) 2013-2017 SlimRoms Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,31 +16,28 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+    xmlns:slim="http://schemas.android.com/apk/res/slim"
     android:title="@string/nav_bar_button_style">
 
-    <!-- Status bar tweaks -->
-    <PreferenceCategory
-        android:title="@string/nav_bar_button_style">
+    <slim.preference.colorpicker.ColorPickerPreference
+         android:key="navigation_bar_button_tint"
+         android:title="@string/navigation_bar_icon_tint_title"
+         slim:defaultColor="#ffffffff"
+         slim:listDependency="navigation_bar_button_tint_mode:3"
+         slim:alphaSliderEnabled="true" />
 
-        <org.slim.preference.colorpicker.ColorPickerPreference
-             android:key="nav_button_color"
-             android:title="@string/navigation_bar_icon_tint_title"
-             android:defaultValue="0xffffffff" />
+    <slim.preference.SlimListPreference
+         android:entries="@array/icon_color_mode_entries"
+         android:entryValues="@array/icon_color_mode_values"
+         android:key="navigation_bar_button_tint_mode"
+         android:title="@string/nav_button_color_mode_title"
+         android:dialogTitle="@string/nav_button_color_mode_dialog_title"
+         android:summary="@string/nav_button_color_mode_summary" />
 
-        <ListPreference
-             android:entries="@array/icon_color_mode_entries"
-             android:entryValues="@array/icon_color_mode_values"
-             android:key="nav_button_color_mode"
-             android:title="@string/nav_button_color_mode_title"
-             android:dialogTitle="@string/nav_button_color_mode_dialog_title"
-             android:summary="@string/nav_button_color_mode_summary" />
-
-        <org.slim.preference.colorpicker.ColorPickerPreference
-             android:key="nav_button_glow_color"
-             android:title="@string/navigation_bar_glow_tint_title"
-             android:defaultValue="0xffffffff" />
-
-    </PreferenceCategory>
+    <slim.preference.colorpicker.ColorPickerPreference
+         android:key="navigation_bar_glow_tint"
+         android:title="@string/navigation_bar_glow_tint_title"
+         slim:defaultColor="#ffffffff"
+         slim:alphaSliderEnabled="true" />
 
 </PreferenceScreen>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2016 SlimRoms Project
+ * Copyright (C) 2014-2017 SlimRoms Project
  * Author: Lars Greiss - email: kufikugel@googlemail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -63,7 +63,7 @@ import com.android.systemui.RecentsComponent;
 import com.android.systemui.recents.misc.Utilities;
 import com.android.systemui.statusbar.BaseStatusBar;
 
-import org.slim.provider.SlimSettings;
+import slim.provider.SlimSettings;
 
 /**
  * Our main recents controller.
@@ -349,12 +349,6 @@ public class RecentController implements RecentPanelView.OnExitListener,
                 }
                 mLastToggleTime = SystemClock.elapsedRealtime();
             } else {
-                if (true || ViewConfiguration.getDoubleTapMinTime() < elapsedTime &&
-                        elapsedTime < ViewConfiguration.getDoubleTapTimeout()) {
-                    if (mRecentPanelView != null) {
-                        mRecentPanelView.startLastTask();
-                    }
-                }
                 hideRecents(false);
             }
         }
@@ -507,6 +501,7 @@ public class RecentController implements RecentPanelView.OnExitListener,
         mHandler.removeCallbacks(mRecentRunnable);
         CacheController.getInstance(mContext).setRecentScreenShowing(true);
         mWindowManager.addView(mParentView, generateLayoutParameter());
+        mRecentPanelView.scrollToFirst();
     }
 
     public static void sendCloseSystemWindows(String reason) {

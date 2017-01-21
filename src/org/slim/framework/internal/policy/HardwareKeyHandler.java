@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 SlimRoms Project
+ * Copyright (C) 2016-2017 SlimRoms Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.slim.framework.internal.policy;
 
+import android.app.ActivityManagerNative;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -36,11 +37,11 @@ import android.view.WindowManagerPolicy.WindowState;
 
 import java.util.Arrays;
 
-import org.slim.action.Action;
-import org.slim.action.ActionConstants;
-import org.slim.action.SlimActionsManager;
-import org.slim.provider.SlimSettings;
-import org.slim.utils.HwKeyHelper;
+import slim.action.Action;
+import slim.action.ActionConstants;
+import slim.action.SlimActionsManager;
+import slim.provider.SlimSettings;
+import slim.utils.HwKeyHelper;
 
 public class HardwareKeyHandler {
 
@@ -570,12 +571,17 @@ public class HardwareKeyHandler {
                     }
                 } else if (longpress) {
                     if (!keyguardOn
-                            && !mLongPressOnBackBehavior.equals(ActionConstants.ACTION_NULL)) {
+                            && (!mLongPressOnBackBehavior.equals(ActionConstants.ACTION_NULL)
+                                    || isInLockTask())) {
                         if (!mLongPressOnBackBehavior.equals(ActionConstants.ACTION_RECENTS)) {
                             cancelPreloadRecentApps();
                         }
                         performHapticFeedback(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        Action.processAction(mContext, mLongPressOnBackBehavior, false);
+                        if (isInLockTask()) {
+                            finishLockTask();
+                        } else {
+                            Action.processAction(mContext, mLongPressOnBackBehavior, false);
+                        }
                         mBackConsumed = true;
                     }
                 }
@@ -802,6 +808,21 @@ public class HardwareKeyHandler {
                 actionsManager.cancelPreloadRecentApps();
             }
         }
+    }
+
+    private void finishLockTask() {
+        try {
+            ActivityManagerNative.getDefault().stopSystemLockTaskMode();
+        } catch (Exception e) {
+        }
+    }
+
+    private boolean isInLockTask() {
+        try {
+            return ActivityManagerNative.getDefault().isInLockTaskMode();
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     private boolean performHapticFeedback(WindowState win, int effectId, boolean always) {
